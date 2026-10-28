@@ -38,7 +38,7 @@ with st.form(key="prediction_form"):
     with col1:
         temp = st.number_input(
             "Processing Temperature (°C)", 
-            min_value=50.0, max_value=400.0, value=170.0, step=1.0,
+            min_value=0.0, max_value=500.0, value=170.0, step=1.0,
             help="Normal operating range: 100 - 250 °C"
         )
         pressure = st.number_input(
@@ -48,14 +48,14 @@ with st.form(key="prediction_form"):
         )
         machine_speed = st.number_input(
             "Machine Speed (RPM)", 
-            min_value=100.0, max_value=5000.0, value=1000.0, step=10.0,
+            min_value=0.0, max_value=5000.0, value=1000.0, step=10.0,
             help="Standard operating speed: 500 - 2000 RPM"
         )
         
     with col2:
         thickness = st.number_input(
             "Material Thickness (mm)", 
-            min_value=0.1, max_value=50.0, value=10.0, step=0.1,
+            min_value=0.0, max_value=100.0, value=10.0, step=0.1,
             help="Thickness threshold: 5.0 - 20.0 mm"
         )
         moisture = st.number_input(
@@ -65,7 +65,7 @@ with st.form(key="prediction_form"):
         )
         cooling_time = st.number_input(
             "Cooling Time (sec)", 
-            min_value=1.0, max_value=300.0, value=30.0, step=0.5,
+            min_value=0.0, max_value=500.0, value=30.0, step=0.5,
             help="Cooling duration: 10.0 - 60.0 seconds"
         )
 
@@ -74,15 +74,17 @@ with st.form(key="prediction_form"):
 # --- 4. Prediction Logic & Output ---
 if submit_button:
     if model is not None:
+        # กำหนดชื่อคอลัมน์ให้ตรงกับที่โมเดลคาดหวังเป๊ะๆ
         input_data = pd.DataFrame([{
-            'processing_temperature': temp,
+            'processing_temperature_c': temp,
             'pressure_bar': pressure,
             'machine_speed_rpm': machine_speed,
             'material_thickness_mm': thickness,
             'material_moisture_pct': moisture,
             'cooling_time_sec': cooling_time
         }])
-        
+
+        # ทำนายผล
         prediction = model.predict(input_data)[0]
         probabilities = model.predict_proba(input_data)[0]
         
